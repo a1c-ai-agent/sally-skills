@@ -185,8 +185,12 @@ Triggers (and `health: false`, default):
   rather than the user's data.
 
 Required input: `message`.
-Optional: `conversation_uuid` to continue a thread, `knowledge` to bias
-retrieval (`'medical'`, `'tcm'`, or both).
+Optional: `knowledge` to bias retrieval (`'medical'`, `'tcm'`, or both).
+
+`chat_with_sally` is **stateless per call** — there is no `conversation_uuid`
+to track. The calling agent owns its own conversation thread. Re-supply any
+short-term context inside the next `message`. Long-term user memory still
+works (mem0 keys on the bearer-resolved user identity).
 
 ### Rule 8 — Personalised health Q&A → `chat_with_sally` with `health: true`
 
@@ -326,8 +330,8 @@ auth header missing).
 | Skill | Cost / call | Typical latency | Idempotent? |
 |---|---|---|---|
 | `health_sync` | $0.000 | 50-300 ms | Yes |
-| `chat_with_sally` (knowledge) | $0.003 | 3-5 s | Yes per `conversation_uuid` |
-| `chat_with_sally` (`health: true`) | $0.003 | 6-12 s | Yes per `conversation_uuid` |
+| `chat_with_sally` (knowledge) | $0.003 | 3-5 s | Stateless — each call independent |
+| `chat_with_sally` (`health: true`) | $0.003 | 6-12 s | Stateless — each call independent |
 | `health_insights` | $0.003 | 4-8 s | Yes per `(type, date)` |
 | `food_journal` | $0.004 | 4-7 s | No (each photo is a fresh analysis) |
 | `metabolic_overview` | $0.005 | 4-8 s | Yes per `date` |

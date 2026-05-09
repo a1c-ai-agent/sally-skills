@@ -30,7 +30,6 @@ genuinely needs *your* numbers.
 ```ts
 {
   reply: string,                  // Sally's full answer, markdown-formatted
-  conversation_uuid: string,      // pass back to continue the conversation
   sources: [{ title, url, snippet }],   // citations from the knowledge base
   language: 'en' | 'zh' | 'id' | …,     // detected response language
   tools_called: ['search_knowledge_base', 'get_user_lab_results', …],
@@ -38,16 +37,21 @@ genuinely needs *your* numbers.
 }
 ```
 
-Three things worth knowing:
+Two things worth knowing:
 
 - **`sources`** is non-empty for any non-trivial health question — Sally
   refuses to answer from training data alone for medical / nutrition /
   TCM topics. If sources is empty and the topic was health-related,
   Sally said so explicitly in `reply` (e.g. "I don't have data on this").
-- **`conversation_uuid`** is how multi-turn works. Pass the same uuid
-  back on the next call and Sally remembers the prior exchange.
 - **`tools_called`** is your transparency window: it tells you exactly
   which retrieval tools fired so you can trust the grounding.
+
+> **Stateless per call.** `chat_with_sally` does not return (or accept)
+> a `conversation_uuid`. Your agent already manages its own conversation
+> with you — it threads turns however it wants and re-supplies any
+> short-term context inside the next `message`. Long-term memory of
+> your profile, past labs, etc. still works (mem0 keys on your account,
+> not on a per-thread token).
 
 ---
 
@@ -74,7 +78,6 @@ Things Sally will politely decline or redirect:
 ```ts
 {
   message:           string,                                // required
-  conversation_uuid?: string,                               // continue a thread
   knowledge?:        'medical' | 'tcm' | ['medical','tcm'], // bias retrieval; default both
   health?:           boolean,                               // unlock personal data; default false
   language?:         string                                 // ISO code; auto-detected from message otherwise
@@ -137,14 +140,14 @@ curl -sS https://sally.a1c.io/v1/call \
         }
       }'
 
-# Continue the conversation
+# Continue the conversation — your agent re-supplies context inside `message`
+# (the skill itself is stateless; no thread token to track).
 curl -sS https://sally.a1c.io/v1/call \
   -H "Authorization: Bearer sk-sally-…" \
   -d '{
         "skill":"chat_with_sally",
         "input":{
-          "message":"And what about CV specifically?",
-          "conversation_uuid":"<uuid from previous reply>",
+          "message":"Earlier you walked me through TIR and GWS. What about CV specifically?",
           "health": true
         }
       }'

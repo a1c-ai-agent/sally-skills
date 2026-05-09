@@ -59,14 +59,16 @@ the MCP path** — pick that unless you're scripting from the command line.
 
 These six skills go live the moment your key works:
 
-| Skill | Cost / call | What it does |
-|---|---|---|
-| [`health_sync`](#) | FREE | Pull your wearable + CGM + sleep + vitals + activity + environment data into the agent's context. |
-| [`chat_with_sally`](#) | $0.003 | Talk to Sally about preventive health & TCM with source citations. |
-| [`analyze_lab_result`](#) | $0.008 | Upload a lab PDF/image; get parsed biomarkers + clinical interpretation. |
-| [`food_journal`](#) | $0.004 | Snap a photo of your meal; get macros + smart/trap categorisation. |
-| [`health_insights`](#) | $0.003 | Morning / afternoon / evening readout from your last day's data. |
-| [`metabolic_overview`](#) | $0.005 | CGM snapshot for a date — TIR, variability, spikes, narrative. |
+| Skill | Cost / call | What it does | Detail |
+|---|---|---|---|
+| `health_sync` | FREE | Pull your wearable + CGM + sleep + vitals + activity + environment data into the agent's context. | [64 fields](catalog/health-sync.md) |
+| `chat_with_sally` | $0.003 | Talk to Sally about preventive health & TCM with source citations. | (coming) |
+| `analyze_lab_result` | $0.008 | Upload a lab PDF/image; get parsed biomarkers + clinical interpretation. | (coming) |
+| `food_journal` | $0.004 | Snap a photo of your meal; get macros + smart/trap categorisation. | (coming) |
+| `health_insights` | $0.003 | Morning / afternoon / evening readout from your last day's data. | (coming) |
+| `metabolic_overview` | $0.005 | CGM snapshot for a date — TIR, variability, spikes, narrative. | (coming) |
+
+→ See [`catalog/`](catalog/) for the full per-skill data breakdown.
 
 Roadmap (visible to your agent as `coming_soon`):
 `health_report`, `metabolic_risk_score`, `supplement_grading`, `preventive_protocol`.

@@ -85,7 +85,17 @@ Roadmap (visible to your agent as `coming_soon`):
 → See [`protocols/api.md`](protocols/api.md) for raw REST calls.
 → See [`agents/`](agents/) for per-agent quick-starts.
 
-### 2c · The 30-second smoke test
+### 2c · Auto-routing for agents and CLIs
+
+Want your agent to pick the right Sally skill for any request without
+you having to think about it? Drop [`SKILL.md`](SKILL.md) into the
+agent's system prompt or instructions field — it's a single file with
+deterministic routing rules, decision tables, chaining patterns, and
+anti-patterns. Works with any LLM-based agent or rule-based CLI.
+
+→ See [`SKILL.md`](SKILL.md) — the full agent decision layer.
+
+### 2d · The 30-second smoke test
 
 Confirm your key works before configuring any agent:
 

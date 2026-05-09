@@ -166,10 +166,10 @@ the agent to answer one specific question grounded in today's numbers.
 - **Allowlist only.** The 64 fields above are *the only thing*
   `health_sync` returns. Internal IDs, audit columns, sensor
   fingerprints, deleted rows — none of those leak.
-- **Aggregated, not raw.** Where it makes sense (CGM time-series,
-  daily summaries) you get the daily aggregate, not the every-5-minute
-  reading. If your agent needs more granularity, ask the Sally team
-  about a higher-tier read.
+- **Aggregated by default, real-time on demand.** Daily summaries by
+  default. If you need the *every-few-minutes* CGM stream — postprandial
+  curves, exercise dips, sleep dives — ask for it explicitly (see
+  "Real-time CGM" below).
 - **Audit log.** Every call to `health_sync` writes a row to your
   usage history. You can see who called it (which key) and when at
   `platform.a1c.io` → **Usage**.
@@ -192,6 +192,71 @@ curl -sS https://sally.a1c.io/v1/call \
 
 You'll see today's morning insight + metabolic overview blocks come
 back. From there, an agent can do the rest.
+
+---
+
+## Real-time CGM (minute-base)
+
+Daily summaries are great for "how was last week?" — but if you want
+to actually *see* what your glucose did during a meal, a workout, or
+the middle of the night, you need the real-time stream.
+
+`health_sync` exposes the minute-by-minute CGM samples your sensor
+records, **opt-in only**, with smart server-side averaging so your
+agent never gets crushed by tens of thousands of rows.
+
+### When to use it
+
+- *"How did breakfast affect my glucose this morning?"* → real-time, last 4h, 1m
+- *"Did the run at 6pm drop my glucose?"* → real-time, that window, 1m
+- *"Plot a 7-day glucose trend at 30-min granularity"* → real-time, 7 days, 30m
+- *"Anything weird overnight?"* → real-time, last 12h, 5m
+
+For everything else (TIR last week, average glucose, spike count) the
+default daily-aggregate CGM block is the right call — cheaper to reason
+over and exactly what's used to grade the day.
+
+### How to ask
+
+Just describe the time-window in plain English. If your agent supports
+MCP, the LLM will pick the right resolution automatically. Otherwise:
+
+```bash
+# Last 24h at 5-minute resolution (default when you opt in)
+curl -sS https://sally.a1c.io/v1/call \
+  -H "Authorization: Bearer sk-sally-…" \
+  -d '{"skill":"health_sync","input":{"include":["cgm_minute"]}}' | jq
+
+# Postprandial review of breakfast at full 1-minute resolution
+curl -sS https://sally.a1c.io/v1/call \
+  -H "Authorization: Bearer sk-sally-…" \
+  -d '{"skill":"health_sync","input":{
+        "include":["cgm_minute"],
+        "cgm_minute_from":"2026-05-09T08:00:00Z",
+        "cgm_minute_to":"2026-05-09T11:00:00Z",
+        "cgm_minute_resolution":"1m"
+      }}' | jq
+```
+
+### Resolution choices
+
+| Resolution | Best for | Window guidance |
+|---|---|---|
+| `1m` | Postprandial curves, exercise events | ≤24h |
+| `5m` *(default)* | Recent day overview | ≤3 days |
+| `15m` | Multi-day trend | ≤7 days |
+| `30m` | Week-scale trend | ≤14 days |
+| `1h` | Multi-week real-time | ≤30 days |
+
+### Caps & guard-rails
+
+- **Max 1,440 rows per call.** If your agent asks for too wide a window
+  at too fine a resolution, the response includes a `capped: true` flag
+  and trims to the most recent 1,440 buckets. Narrow the window or pick
+  a coarser resolution to see older data.
+- **Max 30-day window.** The minute-base table is the largest in the
+  data store; daylong-aggregates handle anything bigger.
+- **Latency**: typically 30-100 ms — same speed as the daily summaries.
 
 ---
 

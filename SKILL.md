@@ -11,6 +11,51 @@
 
 ---
 
+## TL;DR — minimum agent insert
+
+The full doc is ~430 lines, but you only need to paste **this section**
+(~70 lines) into an agent's system prompt for ~95% of requests to route
+correctly. Everything below it is edge-case reference for the routing
+layer's authors.
+
+```text
+You have access to Sally's metabolic-health skills. Pick exactly ONE per turn:
+
+  attached PDF / lab image             → analyze_lab_result        ($0.008)
+  attached meal photo                  → food_journal              ($0.004)
+  "morning|afternoon|evening readout"  → health_insights           ($0.003)
+  "how's my CGM/glucose <date>"        → metabolic_overview        ($0.005)  ← narrated grade
+  glucose during/after a single event  → health_sync (cgm_minute)  (FREE)    ← raw curve
+  general health/TCM/nutrition Q&A     → chat_with_sally           ($0.003)
+  "my X based on Y" (cross-source)     → chat_with_sally health:true ($0.003)
+  raw numbers / trends / sync          → health_sync (default)     (FREE — call first when grounding helps)
+
+Tiebreakers (the routing failures we see most):
+
+  "how's"/"grade"/"score"              → metabolic_overview
+  "show me"/"plot"/"what did"/"during" → health_sync cgm_minute
+  pronoun ("my"/"I"/"me") + a metric   → chat_with_sally health:true (NOT generic chat)
+  mixed attachments (lab + meal)       → ASK which to process first; do NOT silently chain
+  "no live equivalent" (coming_soon)   → surface roadmap; do NOT substitute another paid skill
+
+Always:
+
+  - One sk-sally-… key per A1C user, NO exceptions. If your agent serves N humans, mint N keys.
+  - Never pass user_uuid / email / id in the body — the bearer header is the identity.
+  - Never retry on 401 (bad key) or 402 (top-up needed). Surface and stop.
+  - On 503 / `service_unavailable`: retry up to 2× with backoff (1s, 4s).
+  - For cgm_minute: resolve the user's IANA timezone *before* constructing ISO timestamps.
+  - For analyze_lab_result: redact PII (DOB, MRN, address, SSN) from `ocr_text` before
+    showing the analysis to the end user. Sally returns the raw text on purpose.
+  - health_sync is FREE; call it before any paid skill when health context would improve the answer.
+
+Envelope:
+  success → { ok: true,  data: {...}, usage: { cost_usd } }
+  failure → { ok: false, error: { code, message } }
+```
+
+---
+
 ## How to use this file
 
 - **Agents that support MCP** (Claude Code/Desktop, Cursor, Hermes,
@@ -25,6 +70,13 @@
 The agent calling these skills authenticates **once** with one bearer:
 `Authorization: Bearer sk-sally-…`. There is no per-skill credential.
 The same key resolves the user's identity for every skill.
+
+> **One key = one A1C user. No exceptions.** If your agent serves multiple
+> humans (a SaaS product, a multi-tenant platform, a shared family device),
+> each end-user must have their own A1C account and their own
+> `sk-sally-…` key. Sharing a key across users would mix CGM data, mem0
+> memory, lab history, and usage billing — there is no `user_uuid`
+> override that lets you pretend otherwise. Mint N keys for N humans.
 
 ---
 
@@ -63,6 +115,21 @@ calling). Most agent runtimes handle attachments → base64 transparently.
 Do **not** route here for: meal photos (→ `food_journal`), screenshots
 of CGM apps (→ `metabolic_overview`), text descriptions of past results
 (→ `chat_with_sally` with `health: true`).
+
+**Mixed attachments (lab PDF + meal photo in the same turn).** If the
+user uploads both in one message, **do not silently chain** — surface a
+clarifying question ("which should I look at first — the lab report or
+the meal?") and process only the one they confirm. Each is a paid call
+($0.008 + $0.004) and the user usually only cares about one. Silent
+chaining double-bills.
+
+**PII in lab PDFs.** Reports routinely contain DOB, address, MRN, and
+sometimes SSN. Sally never persists the bytes (no GCS / S3 / Milvus
+upload), and the response is allowlist-scoped — but the `ocr_text`
+field returns the *raw* extracted text on purpose, so your agent can
+do its own redaction pass before showing the analysis to the end user
+or writing it to disk. That redaction is **your agent's
+responsibility**, not Sally's.
 
 ### Rule 2 — Attached meal photo → `food_journal`
 
@@ -118,6 +185,16 @@ gives you the numbers *plus* prose.
 Do **not** route here for intra-day "what happened at 6pm?" questions —
 that's `health_sync` with `cgm_minute`.
 
+**Tiebreaker vs Rule 5 (most common LLM-router failure).** Both rules
+fire on single-day glucose questions. The difference is *what shape*
+the user wants back:
+
+| Phrasing | Route to |
+|---|---|
+| "how's my glucose today?", "what's my GWS?", "give me the grade", "score for yesterday" | **this rule** (`metabolic_overview` — narrated grade + scoring + recs) |
+| "show me today's glucose curve", "plot today", "what did my glucose do at 6pm?", "during/after my run" | **Rule 5** (`health_sync` cgm_minute — raw series the agent reads itself) |
+| "walk me through my glucose" — ambiguous; default to `metabolic_overview` (narrated, faster) unless the user says "walk me through the *curve*" or names a sub-day window |
+
 ### Rule 5 — Intra-day glucose curve → `health_sync` with `cgm_minute`
 
 Triggers:
@@ -153,6 +230,24 @@ Resolution heuristic:
 Hard caps: 1,440 rows per call, 30-day max window. The response includes
 `cgm_minute_meta.capped: true` if the agent must narrow + retry.
 
+**Timezone handling (required).** The user almost always says "at 6pm"
+or "after breakfast", not an ISO timestamp. The agent must resolve
+their IANA zone *before* constructing `cgm_minute_from`/`cgm_minute_to`:
+
+1. Get the user's IANA zone (`America/New_York`, `Asia/Jakarta`, …)
+   from your agent's context — most runtimes carry it via the OS or
+   user profile.
+2. Anchor the user's spoken time in that zone (`2026-05-09 18:00` in
+   `America/New_York` = `2026-05-09T22:00:00Z`).
+3. Send the UTC ISO 8601 string with explicit `Z` suffix.
+
+If you don't know the user's zone, **default to UTC and tell them**
+("Reading your CGM in UTC — let me know if you want a different zone")
+rather than silently picking a tz that may be off by ±12 hours.
+Note: unlike `metabolic_overview` (which accepts a `timezone` field),
+`cgm_minute` does the conversion on the agent side — Sally only sees
+UTC ISO strings.
+
 ### Rule 6 — Multi-source data pull (the on-ramp) → `health_sync`
 
 Triggers:
@@ -174,6 +269,19 @@ your own LLM prompt rather than parsing six arrays.
 `health_sync` is **FREE**. Default to calling it before any paid skill
 when health context would improve the answer.
 
+**Rule 6 vs Rule 8 — pull-and-reason vs let-Sally-synthesise.** Both
+ground in the user's data; pick on latency + voice, not cost:
+
+| You want… | Use |
+|---|---|
+| Numbers in your own context, your own LLM voice, fast (~100 ms data fetch + your tokens) | **Rule 6** (`health_sync`) |
+| Sally's clinical voice + mem0 + 7 internal tools chained, slower (6-12 s) | **Rule 8** (`chat_with_sally health: true`) |
+| To *show* the user a chart / table / graph | **Rule 6** — you control the rendering |
+| Cross-source synthesis ("is my poor sleep causing my spikes?") | **Rule 8** — Sally weaves labs + CGM + sleep + history |
+
+Cost: Rule 6 is FREE + your own LLM tokens; Rule 8 is $0.003 flat. They
+trade latency and authorial control, not money.
+
 ### Rule 7 — Knowledge or TCM question → `chat_with_sally`
 
 Triggers (and `health: false`, default):
@@ -193,6 +301,21 @@ short-term context inside the next `message`. Long-term user memory still
 works (mem0 keys on the bearer-resolved user identity).
 
 ### Rule 8 — Personalised health Q&A → `chat_with_sally` with `health: true`
+
+**Rule 7 vs Rule 8 — pronoun is the signal.** This is the second-most
+common LLM-router failure (after Rule 4↔5). The deterministic rule:
+
+> **First-person pronoun ("my", "I", "me", "mine") + a health metric
+> or biomarker → Rule 8.** Anything else → Rule 7.
+
+| Phrasing | Route to |
+|---|---|
+| "Why does poor sleep cause glucose spikes?" *(generic, third-person)* | Rule 7 |
+| "Is **my** poor sleep causing **my** glucose spikes?" *(first-person + metric)* | Rule 8 |
+| "What's a healthy HbA1c?" | Rule 7 |
+| "What's **my** HbA1c trend?" | Rule 8 |
+| "How does berberine compare to metformin?" | Rule 7 |
+| "Should **I** try berberine given **my** glucose?" | Rule 8 |
 
 Triggers:
 - "Looking at *my* data / labs / numbers, …"
@@ -292,6 +415,17 @@ Before calling a paid skill, the router can ask:
 3. Is the user's wallet healthy? Check the response of any prior call
    — `usage.cost_usd` and the `402 payment_required` error path tell
    you when to slow down.
+4. **There is no proactive-balance endpoint** (yet). The only signals
+   the agent has are `usage.cost_usd` (post-call, retrospective) and
+   `402 payment_required` on the *next* call after balance dips below
+   the skill price. Practical pattern:
+   - Call optimistically.
+   - On the first 402, surface the top-up message at `platform.a1c.io`
+     and pause further paid skill calls for that user until the wallet
+     is replenished.
+   - **Do not** call `/v1/skills` (the public catalog list) as a
+     "balance probe" — that endpoint is unauthenticated metadata and
+     does not reflect wallet state.
 
 `health_sync` is free precisely so this routing layer can call it
 liberally without burning budget.
@@ -317,6 +451,7 @@ All skills return a uniform envelope:
 | `invalid_input` | Schema rejection (unknown field, bad shape) | Fix the input, retry once. |
 | `not_found` | Resource (e.g. date with no data) doesn't exist | Surface message, do not retry. |
 | `upstream_error` | Backend (langchain / OCR / DB) failed | Retry once after 1s; if still failing, surface. |
+| `service_unavailable` *(HTTP 503)* | Gateway healthy but an upstream pod is temporarily unreachable (langchain / OCR cold-starting, DB failover) | Retry up to 2× with exponential backoff (1 s, 4 s). If still failing, surface — **do not** silently downgrade to a different skill. |
 | `rate_limited` | Per-key bucket exceeded | Backoff per `Retry-After`, do not retry-storm. |
 
 Skills do not throw — they always return the envelope. A non-200 HTTP
@@ -353,10 +488,21 @@ to call them; the gateway returns `not_found`:
 - `supplement_grading` — supplement label evaluation
 - `preventive_protocol` — personalised intervention protocol
 
-When users ask for these, tell them they're on the roadmap and
-suggest the closest live equivalent (`metabolic_overview` for risk-
-adjacent questions; `chat_with_sally` with `health: true` for
-preventive protocols).
+When users ask for these, tell them they're on the roadmap and ask
+whether a related live skill might address what they actually need.
+**Do not silently substitute.** Specifically:
+
+- `metabolic_risk_score` (multi-week composite) is **not** the same
+  thing as `metabolic_overview` (single-day grade) — substituting
+  would give the user a fundamentally different number from what they
+  asked for. Surface the roadmap message instead.
+- `health_report` (multi-week composite report) is **not** the same as
+  any single-day skill or as a chain of `health_insights` calls.
+- `supplement_grading` and `preventive_protocol` have no current
+  equivalent in the catalog. `chat_with_sally` with `health: true` can
+  answer adjacent questions, but it should never be presented as
+  *the* `supplement_grading` or `preventive_protocol` skill — only as
+  a related option the user can opt into.
 
 ---
 

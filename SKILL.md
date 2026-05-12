@@ -28,7 +28,7 @@ You have access to Sally's metabolic-health skills. Pick exactly ONE per turn:
   glucose during/after a single event  → health_sync (cgm_minute)  (FREE)    ← raw curve
   general health/TCM/nutrition Q&A     → chat_with_sally           ($0.003)
   "my X based on Y" (cross-source)     → chat_with_sally health:true ($0.003)
-  raw numbers / trends / sync          → health_sync (default)     (FREE — call first when grounding helps)
+  raw numbers / trends / sync          → health_sync (default)     (FREE — 64 daily biomarkers across vitals/CGM/sleep/TIR/activity/environment)
 
 Tiebreakers (the routing failures we see most):
 
@@ -84,7 +84,7 @@ The same key resolves the user's identity for every skill.
 
 | User intent | Skill | Cost |
 |---|---|---|
-| "Pull / sync / show my health data" | `health_sync` | FREE |
+| "Pull / sync / show my health data" *(64 daily biomarkers across 6 domains)* | `health_sync` | FREE |
 | "How did my glucose respond to X?" *(intra-day)* | `health_sync` *(opt-in `cgm_minute`)* | FREE |
 | "Morning / afternoon / evening readout" | `health_insights` | $0.003 |
 | "How's my CGM today / on date X?" | `metabolic_overview` | $0.005 |
@@ -249,6 +249,19 @@ Note: unlike `metabolic_overview` (which accepts a `timezone` field),
 UTC ISO strings.
 
 ### Rule 6 — Multi-source data pull (the on-ramp) → `health_sync`
+
+**What comes back.** One call returns **64 distinct daily biomarkers** spread across
+six clinical domains — **vitals** (16 fields: HRV, RHR, VO₂ max, SpO₂, body energy,
+recovery, readiness, sleep score…), **CGM glucose** (12 fields: mean, TIR %, GWS,
+eHbA1c, MAGE, LBGI/HBGI, spike count…), **time-in-range bands** (8 fields covering
+optimal, suboptimal, mild + severe hypo/hyper), **sleep architecture** (19 fields:
+REM/deep/light/awake minutes, sleep debt + recovery, plus 10 per-axis quality scores
+from respiration to circadian rhythm), an **activity event stream** (every workout +
+step bucket), and **environment** (8 fields: daylight minutes, AQI, UV, vitamin-D
+RDA + adequacy band). Opt into `cgm_minute` and you also get minute-resolution
+glucose for postprandial / exercise / overnight curves. Allowlist-scoped, free,
+typically 50-300 ms. This is the *most data-dense* skill — treat it as the agent's
+default grounding step before anything that needs personalised reasoning.
 
 Triggers:
 - "Pull my health data"

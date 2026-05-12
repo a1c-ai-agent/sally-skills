@@ -19,18 +19,20 @@ correctly. Everything below it is edge-case reference for the routing
 layer's authors.
 
 ```text
-You have access to Sally's metabolic-health skills. Pick exactly ONE per turn:
+You have access to Sally's metabolic-health skills. Everything starts with
+DATA — call health_sync first when grounding will help; reach for the paid
+skills only after you've seen the numbers. Pick exactly ONE per turn:
 
-  attached PDF / lab image             → analyze_lab_result        ($0.008)
-  attached meal photo                  → food_journal              ($0.004)
-  "morning|afternoon|evening readout"  → health_insights           ($0.003)
-  "how's my CGM/glucose <date>"        → metabolic_overview        ($0.005)  ← narrated grade
-  glucose during/after a single event  → health_sync (cgm_minute)  (FREE)    ← raw curve
-  general health/TCM/nutrition Q&A     → chat_with_sally           ($0.003)
-  "my X based on Y" (cross-source)     → chat_with_sally health:true ($0.003)
   raw numbers / trends / sync          → health_sync (default)     (FREE — 64 daily biomarkers across vitals/CGM/sleep/TIR/activity/environment)
+  glucose during/after a single event  → health_sync (cgm_minute)  (FREE)    ← raw intra-day curve
+  "how's my CGM/glucose <date>"        → metabolic_overview        ($0.005)  ← narrated grade
+  "morning|afternoon|evening readout"  → health_insights           ($0.003)
+  "my X based on Y" (cross-source)     → chat_with_sally health:true ($0.003)
+  general health/TCM/nutrition Q&A     → chat_with_sally           ($0.003)
+  attached meal photo                  → food_journal              ($0.004)
+  attached PDF / lab image             → analyze_lab_result        ($0.008)
 
-Tiebreakers (the routing failures we see most):
+Tiebreakers (the cases an LLM router gets wrong most often):
 
   "how's"/"grade"/"score"              → metabolic_overview
   "show me"/"plot"/"what did"/"during" → health_sync cgm_minute
@@ -185,7 +187,7 @@ gives you the numbers *plus* prose.
 Do **not** route here for intra-day "what happened at 6pm?" questions —
 that's `health_sync` with `cgm_minute`.
 
-**Tiebreaker vs Rule 5 (most common LLM-router failure).** Both rules
+**Tiebreaker vs Rule 5 — easy for an LLM router to confuse.** Both rules
 fire on single-day glucose questions. The difference is *what shape*
 the user wants back:
 
@@ -276,8 +278,8 @@ Triggers:
 Default call: `{}` → last 30 days, all six daily-aggregate sources.
 
 Use `aggregate: true` when you want the same shape Sally's morning-
-insight + metabolic-overview engines consume internally — handy for
-your own LLM prompt rather than parsing six arrays.
+insight + metabolic-overview skills accept as input — handy for your
+own LLM prompt rather than parsing six arrays.
 
 `health_sync` is **FREE**. Default to calling it before any paid skill
 when health context would improve the answer.
@@ -288,7 +290,7 @@ ground in the user's data; pick on latency + voice, not cost:
 | You want… | Use |
 |---|---|
 | Numbers in your own context, your own LLM voice, fast (~100 ms data fetch + your tokens) | **Rule 6** (`health_sync`) |
-| Sally's clinical voice + mem0 + 7 internal tools chained, slower (6-12 s) | **Rule 8** (`chat_with_sally health: true`) |
+| Sally's clinical voice + mem0 + chained tool calls under the hood, slower (6-12 s) | **Rule 8** (`chat_with_sally health: true`) |
 | To *show* the user a chart / table / graph | **Rule 6** — you control the rendering |
 | Cross-source synthesis ("is my poor sleep causing my spikes?") | **Rule 8** — Sally weaves labs + CGM + sleep + history |
 
@@ -315,8 +317,7 @@ works (mem0 keys on the bearer-resolved user identity).
 
 ### Rule 8 — Personalised health Q&A → `chat_with_sally` with `health: true`
 
-**Rule 7 vs Rule 8 — pronoun is the signal.** This is the second-most
-common LLM-router failure (after Rule 4↔5). The deterministic rule:
+**Rule 7 vs Rule 8 — pronoun is the signal.** The deterministic rule:
 
 > **First-person pronoun ("my", "I", "me", "mine") + a health metric
 > or biomarker → Rule 8.** Anything else → Rule 7.
@@ -340,7 +341,7 @@ Triggers:
 Required input: `message`, `health: true`.
 
 Cost note: still $0.003 — `health: true` is the same flat price, just
-slower (~6-12s) because Sally fans out internal tool calls.
+slower (~6-12s) because Sally chains multiple tool calls under the hood.
 
 Avoid this rule when a single-source skill suffices: "what's my TIR
 today" should be `metabolic_overview`, not a personalised chat call.

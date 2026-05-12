@@ -135,7 +135,7 @@ Don't see your agent? Most modern agents support MCP — see
 - **Per-call pricing** (no subscription): see the table above. `health_sync`
   is permanently free.
 - **Stripe top-up** lands in phase 4 — until then, ping
-  [cindy@sallya1c.com](mailto:cindy@sallya1c.com) if you exhaust the credit.
+  [ai@sallya1c.com](mailto:ai@sallya1c.com) if you exhaust the credit.
 - **Wallet check is enforced before any call**: paid skills return
   `402 payment_required` if your balance is below the price. No surprise
   charges.
@@ -165,4 +165,4 @@ Don't see your agent? Most modern agents support MCP — see
 
 - Public catalog (technical): https://github.com/Sally-A1C/ai-sally-skills/blob/main/SKILLS.md
 - Per-skill mechanics: each skill's `packages/skill-*/README.md` in that repo
-- Email: [cindy@sallya1c.com](mailto:cindy@sallya1c.com)
+- Email: [ai@sallya1c.com](mailto:ai@sallya1c.com)

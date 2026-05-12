@@ -97,6 +97,132 @@ The same key resolves the user's identity for every skill.
 
 ---
 
+## Just pulling your health data? Start here → `health_sync`
+
+If your goal is to **get your numbers** into an agent — without lab
+PDFs, meal photos, narrated grades, or full-blown chat — `health_sync`
+is the only skill you need. It's **FREE**, sub-300 ms, and returns up
+to **64 daily biomarkers** across vitals, CGM, sleep, time-in-range,
+activity, and environment. Drop it into any MCP- or REST-aware agent
+and ask in plain English.
+
+### The simplest call
+
+```json
+{ "skill": "health_sync", "input": {} }
+```
+
+That's it. Defaults to the **last 30 days, all six daily-aggregate
+sources** as raw per-day series. Plug it into your agent and ask:
+
+- *"How's my recovery trending this week?"*
+- *"Compare my HRV from this week to last."*
+- *"Was I in enough daylight for vitamin D yesterday?"*
+
+### Common variations
+
+#### Just one or two sources
+
+Slice the response to what you actually need — useful for narrow
+prompts when you don't want six arrays of context.
+
+```json
+{ "skill": "health_sync", "input": { "include": ["cgm", "sleep"] } }
+```
+
+Valid sources: `vitals`, `cgm`, `tir`, `sleep`, `activity`, `environment`, `cgm_minute`.
+
+#### LLM-ready aggregate shape
+
+Returns the same shape Sally's own scoring skills accept as input — a
+single `morning_insight` block + a `metabolic_overview` block — so your
+LLM can reason from one prompt instead of parsing six arrays.
+
+```json
+{ "skill": "health_sync", "input": { "aggregate": true } }
+```
+
+#### Different date range
+
+```json
+{ "skill": "health_sync", "input": { "max_days": 7 } }
+```
+
+Or anchor explicitly:
+
+```json
+{ "skill": "health_sync", "input": {
+    "date_from": "2026-04-15",
+    "date_to":   "2026-05-15"
+  } }
+```
+
+Max window: 90 days.
+
+#### Real-time minute-base glucose
+
+When you want to *see* the glucose curve — postprandial spikes,
+exercise dips, overnight dives — opt into `cgm_minute`. Default
+window is the last 24 h at 5-minute buckets; pick `1m` resolution
+for fine-grained postprandial review.
+
+```json
+{ "skill": "health_sync", "input": {
+    "include": ["cgm_minute"],
+    "cgm_minute_from": "2026-05-09T08:00:00Z",
+    "cgm_minute_to":   "2026-05-09T11:00:00Z",
+    "cgm_minute_resolution": "1m"
+  } }
+```
+
+Caps: 1,440 rows per call, 30-day max window. The response includes
+`cgm_minute_meta.capped: true` if you need to narrow + retry.
+Resolutions: `1m` / `5m` *(default)* / `15m` / `30m` / `1h`.
+
+### What comes back (the 64 biomarkers)
+
+| Category | Fields | Examples |
+|---|---|---|
+| Vitals | 16 | HRV, RHR, VO₂ max, SpO₂, body energy, recovery, readiness, sleep score |
+| CGM glucose | 12 | mean, TIR %, GWS, eHbA1c, MAGE, LBGI/HBGI, spike count |
+| Time-in-range bands | 8 | optimal, suboptimal, mild/severe hypo + hyper |
+| Sleep architecture | 19 | REM/deep/light/awake minutes, debt + recovery, 10 per-axis quality scores |
+| Activity | event stream | every workout + step bucket with name, value, source |
+| Environment | 8 | daylight minutes, AQI, UV, vitamin D RDA + adequacy |
+
+See [`catalog/health-sync.md`](catalog/health-sync.md) for the full
+per-field tables.
+
+### When `health_sync` is NOT the right answer
+
+| You actually want… | Use |
+|---|---|
+| A narrated grade ("how's my glucose today?") | `metabolic_overview` ($0.005) |
+| Morning / afternoon / evening summary | `health_insights` ($0.003) |
+| Sally's clinical voice on *your* data | `chat_with_sally` *(`health: true`)* ($0.003) |
+| Lab PDF analysis | `analyze_lab_result` ($0.008) |
+| Meal-photo macros | `food_journal` ($0.004) |
+
+`health_sync` returns **raw data**. The paid skills are **interpretation**
+on top of that data. Call `health_sync` first when grounding helps;
+reach for a paid skill only when you need narration or analysis.
+
+### One-liner smoke test
+
+Verify your key works without writing a line of agent code:
+
+```bash
+curl -sS https://sally.a1c.io/v1/call \
+  -H "Authorization: Bearer sk-sally-..." \
+  -H "Content-Type: application/json" \
+  -d '{"skill":"health_sync","input":{"aggregate":true}}' | jq
+```
+
+You'll see today's morning insight + metabolic overview blocks come
+back. From there, an agent can do the rest.
+
+---
+
 ## Decision rules (deterministic, run before LLM routing)
 
 Apply these in order. **First match wins.** The router should never

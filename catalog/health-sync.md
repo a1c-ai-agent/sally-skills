@@ -172,7 +172,7 @@ the agent to answer one specific question grounded in today's numbers.
   "Real-time CGM" below).
 - **Audit log.** Every call to `health_sync` writes a row to your
   usage history. You can see who called it (which key) and when at
-  `platform.a1c.io` → **Usage**.
+  `console.a1c.io` → **Usage**.
 
 ---
 

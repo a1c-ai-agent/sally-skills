@@ -30,9 +30,9 @@ account and an API key**. Two steps.
 > `food_journal` without any wearable data, but the account itself comes
 > from the iOS app.
 
-### Step 2 — Get your API key from `platform.a1c.io`
+### Step 2 — Get your API key from `console.a1c.io`
 
-1. Visit **<https://platform.a1c.io>** in any browser.
+1. Visit **<https://console.a1c.io>** in any browser.
 2. Sign in with the same A1C account you created in step 1.
 3. Open **API Keys** → **Create new key** → name it (e.g. *"Claude Code on my
    laptop"*) → **Generate**.
@@ -140,7 +140,7 @@ Don't see your agent? Most modern agents support MCP — see
   `402 payment_required` if your balance is below the price. No surprise
   charges.
 - **Audit log**: every call writes an immutable row to your usage history.
-  See it in `platform.a1c.io` → **Usage**.
+  See it in `console.a1c.io` → **Usage**.
 
 ---
 
@@ -156,7 +156,7 @@ Don't see your agent? Most modern agents support MCP — see
 - **Output schemas are allowlists.** Sally's response only ever contains
   the fields explicitly named in each skill's docs. No accidental column
   leak from internal databases.
-- **Revoke instantly** at `platform.a1c.io` → API Keys → Revoke. Old key
+- **Revoke instantly** at `console.a1c.io` → API Keys → Revoke. Old key
   becomes invalid the next request.
 
 ---

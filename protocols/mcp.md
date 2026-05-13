@@ -89,8 +89,8 @@ curl -sS https://sally.a1c.io/mcp \
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | Tools don't appear in your agent | Config file path wrong, or agent wasn't restarted | Confirm path per [agents/](../agents/), restart fully |
-| `401 unauthorized` | Bad / revoked key | Re-issue at <https://platform.a1c.io> |
-| `402 payment_required` | Wallet balance < skill price | Top up at platform.a1c.io (or wait for Stripe in phase 4) |
+| `401 unauthorized` | Bad / revoked key | Re-issue at <https://console.a1c.io> |
+| `402 payment_required` | Wallet balance < skill price | Top up at console.a1c.io (or wait for Stripe in phase 4) |
 | `404 not_found` (specific to a skill, not the URL) | No data for that user/date (e.g. metabolic_overview needs CGM data; lab analysis needs a PDF) | Use a date with synced data, or supply the input the skill needs |
 | `429 rate_limited` | Per-key per-skill bucket exhausted | Wait — defaults are generous, raise it by emailing the team |
 | Tool call hangs | Sally's upstream LLM is slow on big inputs | Lab analysis can take 15-30s, food journal ~10s, metabolic_overview ~15s. Increase your agent's tool timeout if it's enforcing 10s |

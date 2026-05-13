@@ -12,7 +12,7 @@ MCP HTTP transport.
 
 Follow [Section 1 of the main README](../README.md#section-1--onboarding-start-here):
 1. Install **A1C Insights** on iPhone, sign up.
-2. Visit **<https://platform.a1c.io>**, generate a key.
+2. Visit **<https://console.a1c.io>**, generate a key.
 
 ### Step 2 — Register Sally with Hermes
 
@@ -90,7 +90,7 @@ hermes run morning_check
 | Symptom | Fix |
 |---|---|
 | `hermes mcp ls` says sally is "disconnected" | Hermes proxies all MCP traffic — check egress rules; sally.a1c.io must be reachable |
-| Tools listed but invocations 401 | Bearer token typo or revoked — reissue at platform.a1c.io |
+| Tools listed but invocations 401 | Bearer token typo or revoked — reissue at console.a1c.io |
 | Workflow step times out | Increase per-step timeout: `[workflow.…steps].timeout_seconds = 90` |
 
 → Full troubleshooting: [`../protocols/mcp.md`](../protocols/mcp.md#troubleshooting)

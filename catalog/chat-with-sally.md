@@ -96,10 +96,10 @@ You can also be explicit in your prompt.
   mode — purely her knowledge base + web links you cite.
 - **`health: true` writes to mem0**. After the call, Sally retains a
   trimmed summary in conversation memory so she can be smarter on the
-  next call. You can clear it any time at `platform.a1c.io` → Memory.
+  next call. You can clear it any time at `console.a1c.io` → Memory.
 - **$0.003 every call**, knowledge-only or personalised. No surcharge
   for tools used.
-- **Audit log** at `platform.a1c.io` → Usage. Every call is one row,
+- **Audit log** at `console.a1c.io` → Usage. Every call is one row,
   marked with elapsed time and which tools fired.
 
 ---

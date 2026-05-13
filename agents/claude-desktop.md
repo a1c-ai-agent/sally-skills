@@ -10,7 +10,7 @@ The macOS / Windows Claude Desktop app supports MCP via a config file.
 
 Follow [Section 1 of the main README](../README.md#section-1--onboarding-start-here):
 1. Install **A1C Insights** on iPhone, sign up.
-2. Visit **<https://platform.a1c.io>**, generate a key.
+2. Visit **<https://console.a1c.io>**, generate a key.
 
 ### Step 2 — Edit the Claude Desktop config
 
@@ -65,7 +65,7 @@ the message — it'll call `food_journal` or `analyze_lab_result` as needed.
 | Symptom | Fix |
 |---|---|
 | Tools indicator missing | Confirm config file path + JSON validity (use a linter); fully restart the app |
-| 401 on every call | Revoked key — re-issue at platform.a1c.io and update the config |
+| 401 on every call | Revoked key — re-issue at console.a1c.io and update the config |
 | Tool call hangs | Claude Desktop's tool timeout is 60s — lab analysis can exceed that on big PDFs. Try a smaller PDF or use Claude Code (longer timeout) |
 
 → Full troubleshooting: [`../protocols/mcp.md`](../protocols/mcp.md#troubleshooting)

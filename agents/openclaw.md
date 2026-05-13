@@ -12,7 +12,7 @@ Desktop.
 
 Follow [Section 1 of the main README](../README.md#section-1--onboarding-start-here):
 1. Install **A1C Insights** on iPhone, sign up.
-2. Visit **<https://platform.a1c.io>**, generate a key.
+2. Visit **<https://console.a1c.io>**, generate a key.
 
 ### Step 2 — Add Sally to your OpenClaw config
 
@@ -85,7 +85,7 @@ If you want to invoke a tool by name explicitly:
 | Symptom | Fix |
 |---|---|
 | `openclaw mcp list` doesn't show sally | Config file isn't being read — check the exact path with `openclaw config which` |
-| Connection succeeds but `tools list --server sally` is empty | The bearer token is missing or wrong — copy it again from platform.a1c.io |
+| Connection succeeds but `tools list --server sally` is empty | The bearer token is missing or wrong — copy it again from console.a1c.io |
 | Tool calls return 422 | OpenClaw may be sending unexpected fields; report the issue with the raw request |
 
 → Full troubleshooting: [`../protocols/mcp.md`](../protocols/mcp.md#troubleshooting)

@@ -110,7 +110,7 @@ weekly trend fetch under the hood for the LLM context.
 - **Allowlist response**. Every field returned is named above. Sensor
   IDs, raw 5-min readings, internal Milvus traces — none of those
   leak.
-- **Audit log.** One row per call at `platform.a1c.io` → Usage.
+- **Audit log.** One row per call at `console.a1c.io` → Usage.
 
 ---
 

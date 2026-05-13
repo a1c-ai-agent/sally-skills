@@ -11,7 +11,7 @@ Connection is web-based — no config files to edit.
 
 Follow [Section 1 of the main README](../README.md#section-1--onboarding-start-here):
 1. Install **A1C Insights** on iPhone, sign up.
-2. Visit **<https://platform.a1c.io>**, generate a key.
+2. Visit **<https://console.a1c.io>**, generate a key.
 
 ### Step 2 — Add Sally as an MCP tool in Manus
 
@@ -55,7 +55,7 @@ English works just as well.
 | Symptom | Fix |
 |---|---|
 | Tools don't appear after adding the server | Manus retries `tools/list` periodically — wait 30s or remove + re-add the server |
-| `401 unauthorized` | Header format is `Bearer sk-sally-…` (with the space). Recheck the value in platform.a1c.io |
+| `401 unauthorized` | Header format is `Bearer sk-sally-…` (with the space). Recheck the value in console.a1c.io |
 | Tool call times out | Manus enforces 60s per tool — `analyze_lab_result` may exceed this on large PDFs. Consider splitting or compressing the PDF |
 | China region: connection refused | Sally's gateway is on Cloudflare — confirm Cloudflare isn't blocked in your region; if so, contact us for a region-specific endpoint |
 

@@ -12,7 +12,7 @@ agents — one config block, restart, done.
 
 Follow [Section 1 of the main README](../README.md#section-1--onboarding-start-here):
 1. Install **A1C Insights** on iPhone, sign up.
-2. Visit **<https://platform.a1c.io>**, generate a key.
+2. Visit **<https://console.a1c.io>**, generate a key.
 
 ### Step 2 — Add Sally to Perplexity
 

@@ -534,9 +534,9 @@ second call, especially when the second call costs money.
   `health: true` if you also want Sally's interpretation.
 - **Don't retry on `402 payment_required`.** It means the user's
   wallet is below the skill's price. Surface the message and ask the
-  user to top up at `platform.a1c.io` rather than burning retries.
+  user to top up at `console.a1c.io` rather than burning retries.
 - **Don't retry on `401 unauthorized`.** Bad / revoked key. Tell the
-  user to issue a new one at `platform.a1c.io` → API Keys.
+  user to issue a new one at `console.a1c.io` → API Keys.
 - **Don't stuff the bearer in the request body.** It goes only in the
   `Authorization: Bearer …` header.
 
@@ -560,7 +560,7 @@ Before calling a paid skill, the router can ask:
    `402 payment_required` on the *next* call after balance dips below
    the skill price. Practical pattern:
    - Call optimistically.
-   - On the first 402, surface the top-up message at `platform.a1c.io`
+   - On the first 402, surface the top-up message at `console.a1c.io`
      and pause further paid skill calls for that user until the wallet
      is replenished.
    - **Do not** call `/v1/skills` (the public catalog list) as a

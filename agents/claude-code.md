@@ -12,7 +12,7 @@ CLI coding assistant. It speaks MCP natively. Adding Sally takes ~30 seconds.
 Follow [Section 1 of the main README](../README.md#section-1--onboarding-start-here)
 if you haven't already:
 1. Install **A1C Insights** on iPhone, sign up.
-2. Visit **<https://platform.a1c.io>**, generate a key (`sk-sally-…`).
+2. Visit **<https://console.a1c.io>**, generate a key (`sk-sally-…`).
 
 ### Step 2 — Add Sally as an MCP server
 
@@ -91,9 +91,9 @@ name the tool explicitly unless you want to.
 
 | Symptom | Fix |
 |---|---|
-| `/mcp` says "sally — failed" | Check the bearer token — copy it again from platform.a1c.io |
+| `/mcp` says "sally — failed" | Check the bearer token — copy it again from console.a1c.io |
 | Tools listed but every call returns 401 | Token has been revoked (creating a new key auto-revokes old ones) — re-issue and re-add |
-| `payment_required` | Your wallet hit zero — top up at platform.a1c.io |
+| `payment_required` | Your wallet hit zero — top up at console.a1c.io |
 | Tool calls time out | Lab analysis can take 30s. Increase your `mcpTimeout` setting in `~/.claude.json` to `120000` (2min) |
 
 → Full troubleshooting: [`../protocols/mcp.md`](../protocols/mcp.md#troubleshooting)

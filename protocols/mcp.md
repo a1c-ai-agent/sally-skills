@@ -56,6 +56,96 @@ so it knows exactly which arguments to pass.
 
 ---
 
+## Quick start by agent
+
+Same JSON for every client. Only the location of the config file (or which
+settings panel hosts it) changes. Pick yours below.
+
+### Claude Code
+
+Save the universal config to `~/.claude/mcp.json` (user-wide) or
+`.mcp.json` at a project root. Restart the `claude` CLI; the `sally`
+server then appears under `/mcp`.
+
+```bash
+cat > ~/.claude/mcp.json <<'JSON'
+{
+  "mcpServers": {
+    "sally": {
+      "url": "https://sally.a1c.io/mcp",
+      "headers": { "Authorization": "Bearer sk-sally-YOUR-KEY-HERE" }
+    }
+  }
+}
+JSON
+```
+
+### Claude Desktop
+
+Same JSON, placed at the platform-specific path:
+
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+Quit Claude Desktop fully (Cmd+Q on macOS) and reopen. Tools appear in the
+slash-command picker.
+
+### Manus
+
+In the Manus workspace, open **Settings → MCP servers → Add server**.
+Choose transport **HTTP**, paste `https://sally.a1c.io/mcp` as the URL,
+and add the header `Authorization: Bearer sk-sally-YOUR-KEY-HERE`. Save;
+the tools become available to any agent run in that workspace, no
+restart required.
+
+### Perplexity
+
+Under **Settings → Tools / MCP** (Perplexity Pro), click **Add MCP server**.
+Server URL is `https://sally.a1c.io/mcp`; add an Authorization header with
+`Bearer sk-sally-YOUR-KEY-HERE`. Sally's tools then appear under the
+search-with-tools toolbar in chat.
+
+### Codex (OpenAI CLI)
+
+Edit `~/.codex/config.toml` and add an `mcp_servers` entry:
+
+```toml
+[mcp_servers.sally]
+url = "https://sally.a1c.io/mcp"
+headers = { Authorization = "Bearer sk-sally-YOUR-KEY-HERE" }
+```
+
+Restart `codex`. Confirm with `codex mcp list`; the agent picks tools
+automatically when the conversation calls for them.
+
+### Windsurf (Codeium)
+
+Save the universal JSON to `~/.codeium/windsurf/mcp_config.json`. Reload
+Windsurf via **Cmd/Ctrl + Shift + P → Reload Window**. The Cascade panel
+picks up the new tools on the next message.
+
+### Google Antigravity
+
+Open **Settings → Agent → MCP servers → Add**. Set the URL to
+`https://sally.a1c.io/mcp` and the Authorization header to
+`Bearer sk-sally-YOUR-KEY-HERE`. Save; the tools appear in the agent
+panel immediately without a restart.
+
+### Anything else
+
+If your agent supports remote MCP servers (HTTP transport, bearer auth),
+drop the universal JSON in and restart. If it only supports stdio MCP,
+bridge with the official remote-to-stdio shim:
+
+```bash
+npx mcp-remote https://sally.a1c.io/mcp \
+  --header "Authorization:Bearer sk-sally-YOUR-KEY-HERE"
+```
+
+Point the agent's stdio MCP config at that command instead of a URL.
+
+---
+
 ## Verifying the MCP connection
 
 Once configured, ask your agent something simple to test:

@@ -197,6 +197,20 @@ curl -sS https://sally.a1c.io/mcp \
 - Sally's MCP server announces protocol version `2024-11-05` and supports
   `initialize`, `tools/list`, `tools/call`, plus a no-op `ping`.
 
+### Which methods need the bearer
+
+| Method | Auth | Notes |
+|---|---|---|
+| `initialize` | **Public** | Protocol handshake. Scanners can probe without a key. |
+| `tools/list` | **Public** | Returns tool names + descriptions + input schemas. No skill code runs, no wallet decrement, no usage row. Lets MCP catalog registries (Smithery, awesome-mcp lists) cache the catalog. |
+| `ping` | **Public** | Heartbeat. |
+| `notifications/initialized` | **Public** | Lifecycle notification. |
+| `tools/call` | **Bearer required** | The only billed method. Resolves `sk-sally-…` to a `user_uuid`, pre-checks the wallet, decrements per skill price, writes an immutable `skills.usage_events` row. |
+
+In practice this means an agent (or registry) can scan Sally's catalog
+anonymously, but the moment it wants a *result* from any skill it must
+send `Authorization: Bearer sk-sally-…`.
+
 ---
 
 ## See also

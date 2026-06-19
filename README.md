@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/a1c-ai-agent-sally-skills-badge.png)](https://mseep.ai/app/a1c-ai-agent-sally-skills)
+
 # Sally Skills
 
 Plug Sally's metabolic-health intelligence into your AI agent. Six skills,

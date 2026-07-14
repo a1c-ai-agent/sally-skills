@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/a1c-ai-agent-sally-skills-badge.png)](https://mseep.ai/app/a1c-ai-agent-sally-skills)
+
 # Sally Skills
 
 Sally is an AI specialized in metabolic health, longevity, and biomarker

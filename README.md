@@ -8,13 +8,24 @@ and MCP.
 
 Available capabilities include:
 
-- 🩸 Health Context. Pull your +64 biomarkers, blood glucose, and environment data.
-- 🧪 Lab Interpretation
-- 💊 Supplement Grading
-- 🍽️ Food Journal Analysis
-- 🩻 Medical Imaging
-- 📚 Longevity Knowledge
-- more upcoming skills
+- 🩸 **Health Context** — Understand 64+ biomarkers, including blood
+  glucose, HbA1c, sleep, activity, vital signs, and environmental signals.
+- 🧪 **Lab Analysis** — Transform laboratory results into clinically
+  meaningful metabolic health insights.
+- 💊 **Supplement Stack Scoring** — Score and evaluate supplement stacks
+  for quality, effectiveness, and metabolic health considerations.
+- 🥗 **Nutrition Analysis** — Analyze meals and nutrients, identify
+  healthier choices, and detect potential metabolic traps.
+- 📈 **Metabolic Overview** — Interpret continuous glucose monitor (CGM)
+  data to reveal glucose patterns and metabolic health trends.
+- 🌤️ **Daily Insights** — Summarize daily health using sleep, vital signs,
+  activity, and environmental data with personalized insights.
+- 🩻 **Chest & Fracture X-ray Analysis** — Analyze chest and
+  musculoskeletal X-rays to assist in identifying clinically relevant
+  findings.
+- 📚 **Longevity Knowledge** — Access Sally's curated metabolic health and
+  longevity knowledge, combining evidence from Western medicine and
+  Traditional Chinese Medicine (TCM).
 
 Compatible with Claude Code, Claude Desktop, Cursor, OpenClaw, Hermes,
 Manus, Perplexity, and any AI framework that supports REST APIs or MCP.

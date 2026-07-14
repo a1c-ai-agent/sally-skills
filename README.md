@@ -1,8 +1,31 @@
 # Sally Skills
 
-Plug Sally's metabolic-health intelligence into your AI agent. Six skills,
-per-call pricing, one MCP server. Works with Claude Code, Claude Desktop,
-Cursor, OpenClaw, Hermes, Manus, Perplexity, or any tool that speaks REST.
+Sally is an AI specialized in metabolic health, longevity, and biomarker
+intelligence. Sally is specialized for preventive approach.
+Sally Skills lets developers integrate Sally's specialized capabilities into
+AI agents through [Sally Console](https://console.a1c.io) using REST APIs
+and MCP.
+
+Available capabilities include:
+
+- 🩸 Health Context. Pull your +64 biomarkers, blood glucose, and environment data.
+- 🧪 Lab Interpretation
+- 💊 Supplement Grading
+- 🍽️ Food Journal Analysis
+- 🩻 Medical Imaging
+- 📚 Longevity Knowledge
+- more upcoming skills
+
+Compatible with Claude Code, Claude Desktop, Cursor, OpenClaw, Hermes,
+Manus, Perplexity, and any AI framework that supports REST APIs or MCP.
+
+## The Ecosystem
+
+- **Sally** — The AI specialized in metabolic health and longevity.
+- **A1C Insights** — The consumer app where users connect their health data
+  and chat with Sally through [Ask Sally](https://a1c.io).
+- **Sally Console** — The [developer platform](https://console.a1c.io) for
+  integrating Sally's capabilities into AI agents through REST APIs and MCP.
 
 ## Section 1. Onboarding
 
@@ -61,16 +84,21 @@ line.
 
 ### 2a. The skill catalog
 
-These six skills go live the moment your key works:
+These seven skills go live the moment your key works (live list on
+[console.a1c.io](https://console.a1c.io)):
 
-| Skill                | Cost / call | What it does                                                              | Detail                                              |
-| -------------------- | ----------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
-| `health_sync`        | **FREE**    | Pull your wearable, CGM, sleep, vitals, activity, and environment data.   | [64 fields](catalog/health-sync.md)                 |
-| `chat_with_sally`    | $0.003      | Talk to Sally about preventive health and TCM with source citations.      | [usage](catalog/chat-with-sally.md)                 |
-| `analyze_lab_result` | $0.008      | Upload a lab PDF or image; get parsed biomarkers + clinical reading.      | [usage](catalog/analyze-lab-result.md)              |
-| `food_journal`       | $0.004      | Snap a photo of your meal; get macros and smart/trap categorisation.      | [usage](catalog/food-journal.md)                    |
-| `health_insights`    | $0.003      | Morning, afternoon, or evening readout from your last day of data.        | [usage](catalog/health-insights.md)                 |
-| `metabolic_overview` | $0.005      | CGM snapshot for a date: TIR, variability, spikes, and a narrative.       | [usage](catalog/metabolic-overview.md)              |
+| Skill                       | Cost / call                    | What it does                                                               | Detail                                  |
+| --------------------------- | ------------------------------ | -------------------------------------------------------------------------- | ---------------------------------------- |
+| `supplement_grading` 🆕     | $0.008                         | Grade a supplement stack for interactions, evidence quality, and gaps.     | —                                        |
+| `health_sync`               | 10 free / month, then $0.001   | Pull 64+ live biomarkers from wearables and CGM into your agent's context. | [64 fields](catalog/health-sync.md)      |
+| `chat_with_sally`           | $0.003                         | Ask Sally anything across preventive health and TCM, evidence-graded.      | [usage](catalog/chat-with-sally.md)      |
+| `analyze_lab_result`        | $0.008                         | Parse and interpret lab panels with risk flags and reference ranges.       | [usage](catalog/analyze-lab-result.md)   |
+| `health_insights`           | $0.003                         | Morning, afternoon, and evening readouts from sleep, vitals, and activity. | [usage](catalog/health-insights.md)      |
+| `food_journal`              | $0.004                         | Grade meals by macros and glucose-spike prediction, surfacing patterns.    | [usage](catalog/food-journal.md)         |
+| `metabolic_overview`        | $0.005                         | Full CGM snapshot: time-in-range, variability, and postprandial curves.    | [usage](catalog/metabolic-overview.md)   |
+
+Coming soon on the roadmap: `health_report`, `metabolic_risk_score`,
+`xray_skills`, and `preventive_protocol`.
 
 See [`catalog/`](catalog/) for the full per-skill data breakdown.
 
@@ -108,8 +136,8 @@ curl -sS https://sally.a1c.io/v1/call \
 # → true
 ```
 
-`true` means your key is live and can call the free `health_sync` skill.
-You're ready.
+`true` means your key is live and can call `health_sync` (your first 10
+calls each month are free). You're ready.
 
 ## Per-agent guides
 
@@ -128,7 +156,7 @@ Don't see your agent? Most modern agents support MCP. See
 ## Pricing and wallet
 
 * Per-call pricing, no subscription. See the table above. `health_sync`
-  is permanently free.
+  includes 10 free calls per month, then $0.001 per call.
 * Wallet check is enforced before any call. Paid skills return
   `402 payment_required` if your balance is below the price, so there
   are no surprise charges.

@@ -150,6 +150,29 @@ curl -sS https://sally.a1c.io/v1/call \
 `true` means your key is live and can call `health_sync` (your first 10
 calls each month are free). You're ready.
 
+## Grok Build plugin
+
+This repo doubles as a [Grok Build](https://x.ai) plugin. Installing it wires
+Grok to Sally's hosted MCP server; there is nothing to run locally.
+
+| | |
+|---|---|
+| Network endpoint | `https://sally.a1c.io/mcp` (the only host this plugin contacts) |
+| Transport | MCP over HTTP |
+| Credentials | None for the free tools. Account-scoped skills need an `sk-sally-…` key from [console.a1c.io](https://console.a1c.io) |
+| Manifest | [`.mcp.json`](.mcp.json), [`.grok-plugin/plugin.json`](.grok-plugin/plugin.json) |
+| Bundled skills | [`skills/`](skills/) |
+
+The plugin exposes the three free, account-free skills:
+[`search_health_knowledge`](catalog/search-health-knowledge.md),
+[`lookup_supplement_grade`](catalog/lookup-supplement-grade.md), and
+[`lookup_food`](catalog/lookup-food.md). It reads no local files, runs no
+install scripts, and sends nothing anywhere except the query text you pass to
+a tool. The personal skills that read your own biomarkers stay behind an API
+key by design.
+
+---
+
 ## Per-agent guides
 
 Pick the agent you actually use:

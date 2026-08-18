@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "sally": {
+      "type": "http",
+      "url": "https://sally.a1c.io/mcp",
+      "note": "Sally's hosted MCP server for metabolic health and longevity. Keyless access to the free research tools: search_health_knowledge (cited passages from A1C's clinical library, sources resolve to almanac.a1c.io), lookup_supplement_grade (product quality grades), lookup_food (nutrition and glycemic classification). Account-scoped skills unlock with an API key from console.a1c.io."
+    }
+  }
+}

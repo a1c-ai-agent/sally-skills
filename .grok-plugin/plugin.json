@@ -1,0 +1,22 @@
+{
+  "name": "sally",
+  "version": "1.0.0",
+  "description": "Sally is a specialized AI for metabolic health and longevity. Search a cited clinical research library, check supplement quality grades, and look up nutrition with glycemic context, all source-grounded rather than generated.",
+  "author": {
+    "name": "A1C",
+    "url": "https://github.com/a1c-ai-agent"
+  },
+  "repository": "https://github.com/a1c-ai-agent/sally-skills",
+  "homepage": "https://console.a1c.io",
+  "license": "MIT",
+  "keywords": [
+    "sally",
+    "sally ai",
+    "sally console",
+    "a1c",
+    "a1c insights",
+    "metabolic health",
+    "supplement grade",
+    "longevity"
+  ]
+}

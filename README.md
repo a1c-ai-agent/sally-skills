@@ -25,16 +25,45 @@ Compatible with Claude Code, Claude Desktop, Cursor, OpenClaw, Hermes, Manus, Pe
 
 ## Section 1. Onboarding
 
-Before your agent can call any Sally skill, you (the human) need an A1C account and an API key. Two steps.
+Before your agent can call any Sally skill, you (the human) need an API key. There are two ways in,
+and you can start with either.
 
-### Step 1. Install A1C Insights and create your account
+### Path A. Start in the console (fastest)
+
+1. Visit <https://console.a1c.io> and sign up with Apple or Google. No app install, no waitlist.
+2. Open **API Keys**, click **Create new key**, name it (e.g. "Claude Code on my laptop"), and click **Generate**.
+3. **Copy the key now.** It starts with `sk-sally-…` and is shown only once. If you lose it, revoke and re-issue.
+
+This gives you a working key immediately, with access to Sally's specialized reasoning and the
+curated metabolic and longevity knowledge base.
+
+What a console-only key can call today:
+
+| skill | works without biomarkers |
+| --- | --- |
+| `chat_with_sally` | yes |
+| `analyze_lab_result` | yes |
+| `food_journal` | yes |
+| `supplement_grading` | yes |
+| `search_health_knowledge` | yes, free |
+| `lookup_supplement_grade` | yes, free |
+| `lookup_food` | yes, free |
+| `health_sync` | needs biomarkers |
+| `health_insights` | needs biomarkers |
+| `metabolic_overview` | needs biomarkers |
+
+The last three read your own CGM and wearable data, so without it they return a typed
+`no_health_data` error immediately and charge you nothing. Connect your biomarkers in path B and they
+start answering.
+
+### Path B. Add your own biomarkers with A1C Insights
+
+Do this when you want answers about *your* glucose, sleep and labs rather than the domain in general.
 
 1. Open the App Store on your iPhone.
 2. Search for **A1C Insights** and install it, or open <https://apps.apple.com/id/app/a1c-insights/id6748399956> on your phone.
-3. Open the app and tap **Sign Up**. You can use *Sign in with Apple* or
-   email + password.
-4. Walk through onboarding (your basics, goals, optional wearables). This creates your A1C user account. Every skill key is bound to one A1C
-   account.
+3. Sign in with the same account you used on the console, or tap **Sign Up** if you are starting here.
+4. Walk through onboarding (your basics, goals, optional wearables) and connect a CGM or wearable.
 
 <p align="center">
   <img src="assets/onboarding-sync.jpg" alt="A1C Insights syncing your wearable data on first open" width="320" />
@@ -45,24 +74,23 @@ Before your agent can call any Sally skill, you (the human) need an A1C account 
 > Visual walkthrough with annotated screenshots:
 > <https://console.a1c.io/docs.html#quickstart>.
 
-> Why iOS first? Skills like `metabolic_overview`, `health_insights`, and
-> `health_sync` read CGM and wearable data the iPhone app collects via
-> HealthKit. You can still use `chat_with_sally`, `analyze_lab_result`,
-> and `food_journal` without any wearable data, but the account itself is
-> created on the iOS app.
+Sally Console and A1C Insights run on the same backend, so your account and your key are the same on
+both. Already on A1C Insights? Sign in to the console directly and your key works against data you
+have already synced.
 
-### Step 2. Mint your API key on console.a1c.io
+> Why iOS for biomarkers? Skills like `metabolic_overview`, `health_insights`, and `health_sync` read
+> CGM and wearable data the iPhone app collects via HealthKit. Everything else works from a console
+> account alone.
 
-1. Visit <https://console.a1c.io> in any browser.
-2. Sign in with the same A1C account you created in step 1.
-3. Open **API Keys**, click **Create new key**, name it (e.g. "Claude Code on my laptop"), and click **Generate**.
-4. **Copy the key now.** It starts with `sk-sally-…` and is shown only once. If you lose it, revoke and re-issue.
+### Keys and billing
 
-You can mint multiple keys per A1C account, one per agent or device, and they all share the same wallet balance. Per-key usage stays auditable.
+You can mint multiple keys per account, one per agent or device, and they all share the same wallet
+balance. Per-key usage stays auditable. Top up with a card or with USDC on Base, or go unlimited
+monthly.
 
 That's section 1 done. You now have:
 
-* An A1C account linked to your iPhone app data.
+* An account, created wherever suited you.
 * A funded wallet.
 * An `sk-sally-…` API key on your clipboard.
 

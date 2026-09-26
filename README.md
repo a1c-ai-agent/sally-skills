@@ -1,57 +1,39 @@
 # Sally Skills
 
-Sally is an AI specialized in metabolic health, longevity, and biomarker
-intelligence. Sally is specialized for preventive approach.
-Sally Skills lets developers integrate Sally's specialized capabilities into
-AI agents through [Sally Console](https://console.a1c.io) using REST APIs
-and MCP.
+Sally is specialized intelligence in metabolic health. Sally Skills lets developers integrate Sally's specialized capabilities into AI agents through [Sally Console](https://console.a1c.io) using REST APIs and MCP.
 
 Available capabilities include:
 
-- 🩸 **Health Context** — Understand 64+ biomarkers, including blood
-  glucose, HbA1c, sleep, activity, vital signs, and environmental signals.
-- 🧪 **Lab Analysis** — Transform laboratory results into clinically
-  meaningful metabolic health insights.
-- 💊 **Supplement Stack Scoring** — Score and evaluate supplement stacks
-  for quality, effectiveness, and metabolic health considerations.
-- 🥗 **Nutrition Analysis** — Analyze meals and nutrients, identify
-  healthier choices, and detect potential metabolic traps.
-- 📈 **Metabolic Overview** — Interpret continuous glucose monitor (CGM)
-  data to reveal glucose patterns and metabolic health trends.
-- 🌤️ **Daily Insights** — Summarize daily health using sleep, vital signs,
-  activity, and environmental data with personalized insights.
-- 🩻 **Chest & Fracture X-ray Analysis** — Analyze chest and
-  musculoskeletal X-rays to assist in identifying clinically relevant
+- 🩸 **Health Context** — Understand 64+ biomarkers, including blood glucose, HbA1c, sleep, activity, vital signs, and environmental signals.
+- 🧪 **Lab Analysis** — Transform laboratory results into clinically meaningful metabolic health insights.
+- 💊 **Supplement Stack Scoring** — Score and evaluate supplement stacks for quality, effectiveness, and metabolic health considerations.
+- 🥗 **Nutrition Analysis** — Analyze meals and nutrients, identify healthier choices, and detect potential metabolic traps.
+- 📈 **Metabolic Overview** — Interpret continuous glucose monitor (CGM) data to reveal glucose patterns and metabolic health trends.
+- 🌤️ **Daily Insights** — Summarize daily health using sleep, vital signs, activity, and environmental data with personalized insights.
+- 🩻 **Chest & Fracture X-ray Analysis** — Analyze chest and musculoskeletal X-rays to assist in identifying clinically relevant
   findings.
-- 📚 **Longevity Knowledge** — Access Sally's curated metabolic health and
-  longevity knowledge, combining evidence from Western medicine and
+- 📚 **Longevity Knowledge** — Access Sally's curated metabolic health and longevity knowledge, combining evidence from Western medicine and
   Traditional Chinese Medicine (TCM).
 
-Compatible with Claude Code, Claude Desktop, Cursor, OpenClaw, Hermes,
-Manus, Perplexity, and any AI framework that supports REST APIs or MCP.
+Compatible with Claude Code, Claude Desktop, Cursor, OpenClaw, Hermes, Manus, Perplexity, and any AI framework that supports REST APIs or MCP.
 
 ## The Ecosystem
 
 - **Sally** — The AI specialized in metabolic health and longevity.
-- **A1C Insights** — The consumer app where users connect their health data
-  and chat with Sally through [Ask Sally](https://a1c.io).
-- **Sally Console** — The [developer platform](https://console.a1c.io) for
-  integrating Sally's capabilities into AI agents through REST APIs and MCP.
+- **A1C Insights** — The consumer app where users connect their health data and chat with Sally through [Ask Sally](https://a1c.io).
+- **Sally Console** — The [developer platform](https://console.a1c.io) for integrating Sally's capabilities into AI agents through REST APIs and MCP.
 
 ## Section 1. Onboarding
 
-Before your agent can call any Sally skill, you (the human) need an A1C
-account and an API key. Two steps.
+Before your agent can call any Sally skill, you (the human) need an A1C account and an API key. Two steps.
 
 ### Step 1. Install A1C Insights and create your account
 
 1. Open the App Store on your iPhone.
-2. Search for **A1C Insights** and install it, or open
-   <https://apps.apple.com/id/app/a1c-insights/id6748399956> on your phone.
+2. Search for **A1C Insights** and install it, or open <https://apps.apple.com/id/app/a1c-insights/id6748399956> on your phone.
 3. Open the app and tap **Sign Up**. You can use *Sign in with Apple* or
    email + password.
-4. Walk through onboarding (your basics, goals, optional wearables). This
-   creates your A1C user account. Every skill key is bound to one A1C
+4. Walk through onboarding (your basics, goals, optional wearables). This creates your A1C user account. Every skill key is bound to one A1C
    account.
 
 <p align="center">
@@ -73,13 +55,10 @@ account and an API key. Two steps.
 
 1. Visit <https://console.a1c.io> in any browser.
 2. Sign in with the same A1C account you created in step 1.
-3. Open **API Keys**, click **Create new key**, name it (e.g. "Claude
-   Code on my laptop"), and click **Generate**.
-4. **Copy the key now.** It starts with `sk-sally-…` and is shown only
-   once. If you lose it, revoke and re-issue.
+3. Open **API Keys**, click **Create new key**, name it (e.g. "Claude Code on my laptop"), and click **Generate**.
+4. **Copy the key now.** It starts with `sk-sally-…` and is shown only once. If you lose it, revoke and re-issue.
 
-You can mint multiple keys per A1C account, one per agent or device, and
-they all share the same wallet balance. Per-key usage stays auditable.
+You can mint multiple keys per A1C account, one per agent or device, and they all share the same wallet balance. Per-key usage stays auditable.
 
 That's section 1 done. You now have:
 
@@ -89,8 +68,7 @@ That's section 1 done. You now have:
 
 ## Section 2. Use your key from any agent
 
-You have one key. Three ways to call Sally with it. Most agents only
-need the MCP path. Pick that unless you're scripting from the command
+You have one key. Three ways to call Sally with it. Most agents only need the MCP path. Pick that unless you're scripting from the command
 line.
 
 ### 2a. The skill catalog
@@ -127,10 +105,8 @@ See [`protocols/mcp.md`](protocols/mcp.md) for the universal MCP setup,
 
 ### 2c. Auto-routing for agents and CLIs
 
-Want your agent to pick the right Sally skill for any request without
-you having to think about it? Drop [`SKILL.md`](SKILL.md) into the
-agent's system prompt or instructions field. It's a single file with
-deterministic routing rules, decision tables, chaining patterns, and
+Want your agent to pick the right Sally skill for any request without you having to think about it? Drop [`SKILL.md`](SKILL.md) into the
+agent's system prompt or instructions field. It's a single file with deterministic routing rules, decision tables, chaining patterns, and
 anti-patterns. Works with any LLM-based agent or rule-based CLI.
 
 See [`SKILL.md`](SKILL.md) for the full agent decision layer.
@@ -166,29 +142,19 @@ Don't see your agent? Most modern agents support MCP. See
 
 ## Pricing and wallet
 
-* Per-call pricing, no subscription. See the table above. `health_sync`
-  includes 10 free calls per month, then $0.001 per call.
+* Per-call pricing, no subscription. See the table above. `health_sync` includes 10 free calls per month, then $0.001 per call.
 * Wallet check is enforced before any call. Paid skills return
-  `402 payment_required` if your balance is below the price, so there
-  are no surprise charges.
-* Top up via Stripe at <https://console.a1c.io/billing>. Card payments
-  in USD.
-* Every call writes an immutable row to your usage history. See it in
-  `console.a1c.io` under **Usage**.
+  `402 payment_required` if your balance is below the price, so there are no surprise charges.
+* Top up via Stripe at <https://console.a1c.io/billing>. Card payments in USD.
+* Every call writes an immutable row to your usage history. See it in `console.a1c.io` under **Usage**.
 
 ## Privacy and security
 
-* Your key is your identity. Sally never accepts `user_uuid`, `email`,
-  or any other identifier from your agent's request body, only the
-  `Authorization: Bearer sk-sally-…` header. No agent can impersonate
-  another user.
-* Lab PDFs and meal photos are never persisted by Sally. They flow
-  agent → gateway → AI service → response, with no S3 or GCS upload.
-* Output schemas are allowlists. Sally's response only ever contains
-  the fields explicitly named in each skill's docs. No accidental column
-  leak from internal databases.
-* Revoke instantly at `console.a1c.io` under **API Keys → Revoke**. The
-  old key becomes invalid on its next request.
+* Your key is your identity. Sally never accepts `user_uuid`, `email`, or any other identifier from your agent's request body, only the
+  `Authorization: Bearer sk-sally-…` header. No agent can impersonate another user.
+* Lab PDFs and meal photos are never persisted by Sally. They flow agent → gateway → AI service → response, with no S3 or GCS upload.
+* Output schemas are allowlists. Sally's response only ever contains the fields explicitly named in each skill's docs. No accidental column leak from internal databases.
+* Revoke instantly at `console.a1c.io` under **API Keys → Revoke**. The old key becomes invalid on its next request.
 
 ## Help
 
